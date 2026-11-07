@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven and Allure
 
 on:
   push:
@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # Важно: даем права на запись, чтобы запушить отчет в gh-pages
     permissions:
       contents: write
 
@@ -26,10 +24,9 @@ jobs:
 
       - name: Build and Run Tests
         run: mvn clean test
-        # Даже если тесты упадут, мы хотим собрать отчет
         continue-on-error: true
 
-      # 1. Загружаем историю предыдущих отчетов (чтобы графики не начинали с нуля)
+      # 1. Пытаемся загрузить историю (если ветки gh-pages еще нет - просто пропускаем)
       - name: Load Allure history
         uses: actions/checkout@v4
         if: always()
@@ -38,9 +35,9 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      # 2. Генерируем HTML-отчет
+      # 2. Генерируем отчет (используем master, так как в v1.11 были баги с Docker)
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@v1.11
+        uses: simple-elf/allure-report-action@master
         if: always()
         with:
           allure_results: target/allure-results
