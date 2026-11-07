@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Важно: даем права на запись, чтобы запушить отчет в gh-pages
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,3 +26,32 @@ jobs:
 
       - name: Build and Run Tests
         run: mvn clean test
+        # Даже если тесты упадут, мы хотим собрать отчет
+        continue-on-error: true
+
+      # 1. Загружаем историю предыдущих отчетов (чтобы графики не начинали с нуля)
+      - name: Load Allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      # 2. Генерируем HTML-отчет
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@v1.11
+        if: always()
+        with:
+          allure_results: target/allure-results
+          allure_history: allure-history
+          gh_pages: gh-pages
+
+      # 3. Публикуем на GitHub Pages
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
