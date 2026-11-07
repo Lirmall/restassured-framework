@@ -15,7 +15,8 @@ public class SimpleApiTest {
     @Test
     void checkUserExists() {
         given().baseUri("https://jsonplaceholder.typicode.com")
-                .when().get("/users/1").then().statusCode(200);
+                .when().get("/users/1")
+                .then().statusCode(200);
     }
 
     @Test
