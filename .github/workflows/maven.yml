@@ -10,7 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +28,7 @@ jobs:
         run: mvn clean test
         continue-on-error: true
 
-      # 1. Пытаемся загрузить историю (если ветки gh-pages еще нет - просто пропускаем)
+      # Загружаем историю (если она есть)
       - name: Load Allure history
         uses: actions/checkout@v4
         if: always()
@@ -35,20 +37,24 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      # 2. Генерируем отчет (используем master, так как в v1.11 были баги с Docker)
+      # Генерируем отчет (используем v1.15, так как v1.11 может глючить)
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
+        uses: simple-elf/allure-report-action@v1.15
         if: always()
         with:
           allure_results: target/allure-results
           allure_history: allure-history
           gh_pages: gh-pages
 
-      # 3. Публикуем на GitHub Pages
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # Загружаем артефакт для деплоя
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
+          path: allure-history
+
+      # Деплоим на GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        if: always()
