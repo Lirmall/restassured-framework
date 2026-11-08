@@ -1,4 +1,4 @@
-package ru.klokov;
+package ru.klokov.utils;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;

@@ -1,4 +1,4 @@
-package ru.klokov;
+package ru.klokov.tests;
 
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.Test;
