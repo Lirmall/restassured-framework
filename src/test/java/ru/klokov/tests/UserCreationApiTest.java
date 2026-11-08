@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import ru.klokov.utils.UriStorage;
 import ru.klokov.utils.UserApiClient;
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Epic("Управление пользователями")
@@ -28,5 +29,18 @@ public class UserCreationApiTest {
         response.then().statusCode(201);
 
         assertEquals(name, response.jsonPath().getString("name"));
+    }
+
+
+    @Test
+    @Description("Проверка создания пользователя и валидации JSON-схемы")
+    void createUserAndValidateSchema() {
+        String name = faker.name().firstName();
+        String job = faker.job().title();
+
+        userApi.createUser(name, job, BASE_URL)
+                .then()
+                .statusCode(201)
+                .body(matchesJsonSchemaInClasspath("json_schemas/user-schema.json"));
     }
 }
