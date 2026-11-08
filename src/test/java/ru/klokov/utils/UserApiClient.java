@@ -15,9 +15,11 @@ public class UserApiClient {
                 .baseUri(BASE_URL)
                 .contentType("application/json")
                 .body(body)
+                .log().all()
                 .when()
                 .post("/users")
                 .then()
+                .log().all()
                 .extract().response();
     }
 }
