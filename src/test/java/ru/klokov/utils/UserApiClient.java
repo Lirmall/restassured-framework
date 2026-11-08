@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class UserApiClient {
-    private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
+    private static final String BASE_URL = UriStorage.getJsonPlaceholderUri();
 
     @Step("Создание пользователя: {name}, должность: {job}")
     public Response createUser(String name, String job) {
