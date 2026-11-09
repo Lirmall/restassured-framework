@@ -21,7 +21,7 @@ public class SimpleUiLoginTest {
         options.addArguments("--headless"); // Запуск без окна (для CI)
         options.addArguments("--no-sandbox"); // Для GitHub Actions (Linux)
         options.addArguments("--disable-dev-shm-usage"); // Для GitHub Actions (Linux)
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         driver.get("https://www.saucedemo.com/");
     }
 
