@@ -30,7 +30,7 @@ jobs:
 
       # Загружаем историю (если она есть)
       - name: Load Allure history
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         if: always()
         continue-on-error: true
         with:
@@ -56,5 +56,5 @@ jobs:
       # Деплоим на GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         if: always()
