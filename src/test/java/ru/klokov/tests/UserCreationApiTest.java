@@ -6,6 +6,8 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import ru.klokov.utils.UriStorage;
 import ru.klokov.utils.UserApiClient;
 
@@ -42,5 +44,18 @@ public class UserCreationApiTest {
                 .then()
                 .statusCode(201)
                 .body(matchesJsonSchemaInClasspath("json_schemas/user-schema.json"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Andrey, SDET",
+            "Ivan, Developer",
+            "Maria, QA"
+    })
+    @Description("Параметризованная проверка создания пользователей с разными данными")
+    void createMultipleUsers(String name, String job) {
+        Response response = userApi.createUser(name, job, BASE_URL);
+        response.then().statusCode(201);
+        assertEquals(name, response.jsonPath().getString("name"));
     }
 }
