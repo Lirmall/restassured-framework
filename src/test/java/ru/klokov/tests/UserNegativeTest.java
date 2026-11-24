@@ -3,11 +3,13 @@ package ru.klokov.tests;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import ru.klokov.utils.UriStorage;
 import ru.klokov.utils.UserApiClient;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 
 @Epic("Получение пользователей")
 @Feature("Получение пользователя с различными параметрами (негативные сценарии)")
@@ -19,12 +21,15 @@ public class UserNegativeTest {
     @Description("Проверка получения несуществующего пользователя (404 Not Found)")
     void getUserNotFound() {
         userApi.getUserById(9999, BASE_URL)
-                .then().statusCode(404);
+                .then()
+                .statusCode(404)
+                .contentType(ContentType.JSON)
+                .body("isEmpty()", is(true));
     }
 
     @Test
-    @Description("Проверка создания пользователя без тела (400 Bad Request)")
-    void createUserWithoutBody() {
+    @Description("Проверка обработки запроса с пустым JSON-объектом")
+    void createUserWithEmptyJsonObject() {
         given()
                 .baseUri(BASE_URL)
                 .contentType("application/json")

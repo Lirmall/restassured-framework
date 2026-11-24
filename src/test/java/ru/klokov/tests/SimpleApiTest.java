@@ -1,9 +1,7 @@
 package ru.klokov.tests;
 
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.klokov.utils.UriStorage;
 
 import static io.restassured.RestAssured.given;
@@ -11,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 public class SimpleApiTest {
-    private static final Logger log = LoggerFactory.getLogger(SimpleApiTest.class);
     private final String BASE_URI = UriStorage.getJsonPlaceholderUri();
 
     @Test
