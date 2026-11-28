@@ -57,12 +57,21 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
+      - name: Install Allure CLI
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz
+          tar -zxvf allure-2.30.0.tgz
+          sudo mv allure-2.30.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
+        run: allure generate target/allure-results -o allure-history --clean
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          allure_results: target/allure-results
-          allure_history: allure-history
-          gh_pages: gh-pages
+          name: github-pages
+          path: allure-history
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
